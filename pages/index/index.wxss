@@ -1,0 +1,18 @@
+/**index.wxss**/
+swiper {
+  height: 198px;
+  width: 320px;
+}
+swiper swiper-item{
+  height: 100%;
+}
+swiper swiper-item .slide_image {
+  width: 100%;
+}
+swiper .slide_title {
+  position: absolute;
+  top: 108px;
+  color: #fff;
+  font-size: 20px;
+  padding: 10px;
+}

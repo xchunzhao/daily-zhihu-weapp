@@ -1,0 +1,17 @@
+<!--index.wxml-->
+<view class="container">
+  <!--banner轮播-->
+  <swiper 
+    indicator-dots="{{swiperConfig.indicatorDots}}" 
+    autoplay="{{swiperConfig.autoplay}}" 
+    interval="{{swiperConfig.interval}}" 
+    duration="{{swiperConfig.duration}}"
+  >
+    <block wx:key="{{id}}" wx:for="{{topStories}}">
+      <swiper-item id="{{item.id}}" bindtap="navToDetail" >
+        <image src="{{item.image}}" class="slide_image" mode="widthFix"/>
+        <view class="slide_title">{{item.title}}</view>
+      </swiper-item>
+    </block>
+  </swiper>
+</view>

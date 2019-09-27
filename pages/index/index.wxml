@@ -1,4 +1,6 @@
 <!--index.wxml-->
+<import src="../../components/news/index.wxml"/>
+
 <view class="container">
   <!--banner轮播-->
   <swiper 
@@ -14,4 +16,12 @@
       </swiper-item>
     </block>
   </swiper>
+
+  <!--最新列表-->
+  <view class="news_list">
+    <block wx:key="{{id}}" wx:for="{{stories}}">
+      <template is="news_item" data="{{id:item.id,title:item.title,image:item.images[0]}}"
+      />
+    </block>
+  </view>
 </view>

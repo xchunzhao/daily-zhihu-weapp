@@ -1,4 +1,5 @@
 /**index.wxss**/
+@import "../../components/news/index.wxss";
 swiper {
   height: 198px;
   width: 320px;
@@ -15,4 +16,9 @@ swiper .slide_title {
   color: #fff;
   font-size: 20px;
   padding: 10px;
+}
+
+.news_list {
+  padding-bottom: 1rpx;
+  width: 100%;
 }

@@ -1,0 +1,24 @@
+<template name="news_item">
+  <view 
+    class="news_item" 
+    id="{{id}}" 
+    bindtap="navToDetail"
+  >
+  <!--判断是否有图片-->
+  <block wx:if="{{image != null}}">
+    <view class="fl_left">
+      {{title}}
+    </view>
+    <view class="fl_right">
+      <image src="{{image}}"></image>
+    </view>
+  </block>
+  <block wx:else>
+    <view class="no_image">
+      {{title}}
+    </view>
+  </block>
+  </view>
+</template>
+
+

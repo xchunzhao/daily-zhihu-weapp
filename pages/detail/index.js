@@ -68,6 +68,10 @@ Page({
   // 加载文章内容
   onLoad: function(option){
     var self = this;
+    wx.showShareMenu({
+      // 要求小程序返回分享目标信息
+      withShareTicket: true
+    });
     wxRequest({
       url: CONFIG.API_URL.NEWS_DETAIL_QUERY + option.id, 
       method: 'GET',
@@ -87,5 +91,17 @@ Page({
       //加载评论信息
       // self.loadExtraData(res.data.id);
     });
+  },
+  onShareAppMessage: function (ops) {
+    return {
+      title: 'Daily zhihu',
+      path: `pages/index/index`,
+      success: function (res) {
+        dialog.toast('转发成功');
+      },
+      fail: function (res) {
+        dialog.toast('转发失败');
+      }
+    }
   }
 });

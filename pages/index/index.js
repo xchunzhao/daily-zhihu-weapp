@@ -4,8 +4,19 @@ const app = getApp()
 
 import CONFIG from "../../utils/config.js";
 import wxRequest from '../../utils/wxRequest';
+import dialog from '../../utils/dialog';
 import moment from '../../utils/moment.min.js';
 var util = require("../../utils/util.js");
+
+const day2Zh = {
+  0: '天',
+  1: '一',
+  2: '二',
+  3: '三',
+  4: '四',
+  5: '五',
+  6: '六'
+};
 
 function range(start, end){
   const result = [];
@@ -13,6 +24,10 @@ function range(start, end){
     result.push(i);
   }
   return result;
+}
+
+function transformDate(date){
+  return moment(date).format('YYYY-MM-DD') + " 星期" + day2Zh[moment(date).day()]
 }
 
 Page({
@@ -43,11 +58,11 @@ Page({
         const nowDate = res.data.date;
         const stories = [];
         stories.push({
-          date: nowDate,
+          date: transformDate(nowDate),
           stories: res.data.stories
         });
         //再获取前4天数据
-        const promises = range(0,4).map(i => {
+        const promises = range(0,9).map(i => {
           const queryDate = moment(nowDate).subtract(i, 'days').format('YYYYMMDD');
           return wxRequest({
             url: CONFIG.API_URL.NEWS_HOSTORY_QUERY + queryDate, 
@@ -61,7 +76,12 @@ Page({
         .then(responses => {
           self.setData({
             topStories: res.data.top_stories,
-            stories: stories.concat(responses.map(res => res.data))
+            stories: stories.concat(responses.map(res => {
+              return {
+                date: transformDate(res.data.date),
+                stories: res.data.stories
+              }
+            }))
           })
         });
       }
@@ -83,7 +103,23 @@ Page({
     })
   },
   onLoad: function () {
+    wx.showShareMenu({
+      // 要求小程序返回分享目标信息
+      withShareTicket: true
+    });
     //获取知乎日报信息
     this.getNewsList();
   },
+  onShareAppMessage: function (ops) {
+    return {
+      title: 'Daily zhihu',
+      path: `pages/index/index`,
+      success: function (res) {
+        dialog.toast('转发成功');
+      },
+      fail: function (res) {
+        dialog.toast('转发失败');
+      }
+    }
+  }
 })

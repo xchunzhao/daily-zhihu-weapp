@@ -1,7 +1,6 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/section/index",
     "pages/detail/index",
     "pages/outlink/index"
   ],
@@ -11,26 +10,6 @@
     "navigationBarBackgroundColor": "#4abdcc",
     "navigationBarTextStyle": "white",
     "backgroundColor": "#f6f6f6"
-  },
-  "tabBar": {
-    "color": "#b0b0b0",
-    "selectedColor": "#4abdcc",
-    "borderStyle": "black",
-    "backgroundColor": "#fff",
-    "list": [
-      {
-        "pagePath": "pages/index/index",
-        "iconPath": "images/home.png",
-        "selectedIconPath": "images/home_selected.png",
-        "text": "最新"
-      },
-      {
-        "pagePath": "pages/section/index",
-        "iconPath": "images/zhuti.png",
-        "selectedIconPath": "images/zhuti_selected.png",
-        "text": "专栏"
-      }
-    ]
   },
   "networkTimeout": {
     "request": 10000,

@@ -3,9 +3,9 @@
 //获取应用实例
 var app = getApp();
 
+import wxRequest from '../../utils/wxRequest';
 const util = require('../../utils/util');
 const CONFIG = require("../../utils/config");
-const dialog = require("../../utils/dialog");
 
 // 引入富文本解析自定义组件
 const WxParse = require('../../wxParse/wxParse');
@@ -50,49 +50,42 @@ Page({
   },
   loadExtraData: function(newsId){
     var self = this;
-    wx.request({
+    wxRequest({
       url: CONFIG.API_URL.NEWS_EXTRADATA_QUERY + newsId, 
       method: 'GET',
       header: {
         'Content-Type': 'application/json'
-      },
-      success: function(res) {
-        self.setData({
-          comments: res.data.comments,
-          popularity: res.data.popularity,
-          longComments: res.data.long_comments,
-          shortComments: res.data.short_comments
-        })
       }
+    }).then(res => {
+      self.setData({
+        comments: res.data.comments,
+        popularity: res.data.popularity,
+        longComments: res.data.long_comments,
+        shortComments: res.data.short_comments
+      })
     })
   },
   // 加载文章内容
   onLoad: function(option){
-    dialog.loading();
     var self = this;
-    wx.request({
+    wxRequest({
       url: CONFIG.API_URL.NEWS_DETAIL_QUERY + option.id, 
       method: 'GET',
       header: {
         'Content-Type': 'application/json'
-      },
-      success: function(res) {
-        //富文本解析
-        var article = res.data.body;
-        WxParse.wxParse('article', 'html', article, self, 0);
-        self.setData({
-          newsId: res.data.id,
-          title: res.data.title,
-          imgSrc: res.data.image
-        })
-        //加载评论信息
-        // self.loadExtraData(res.data.id);
-      },
-      complete: function(){
-        setTimeout(function(){
-          dialog.hide(); 
-        },1000);
       }
-    })
+    }).then(res => {
+      console.log(res);
+      //富文本解析
+      var article = res.data.body;
+      WxParse.wxParse('article', 'html', article, self, 0);
+      self.setData({
+        newsId: res.data.id,
+        title: res.data.title,
+        imgSrc: res.data.image
+      })
+      //加载评论信息
+      // self.loadExtraData(res.data.id);
+    });
   }
 });

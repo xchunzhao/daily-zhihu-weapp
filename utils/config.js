@@ -5,6 +5,8 @@ const CONFIG = {
   API_URL: {
     //最新日报
     NEWS_LATEST_QUERY: WEB_API_URL + "/api/4/news/latest",
+    //查看历史日报
+    NEWS_HOSTORY_QUERY: WEB_API_URL + '/api/4/news/before/',
     //热门日报
     NEWS_HOT_QUERY: WEB_API_URL + "/api/4/news/hot",
     //文章详情{ID}

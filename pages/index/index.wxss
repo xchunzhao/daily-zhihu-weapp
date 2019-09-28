@@ -2,7 +2,7 @@
 @import "../../components/news/index.wxss";
 swiper {
   height: 198px;
-  width: 320px;
+  width: 100%;
 }
 swiper swiper-item{
   height: 100%;
@@ -18,7 +18,22 @@ swiper .slide_title {
   padding: 10px;
 }
 
+.news {
+  width: 100%;
+  padding-bottom: 120rpx;
+}
+
 .news_list {
   padding-bottom: 1rpx;
   width: 100%;
+}
+.news_date {
+  background-color: #4abdcc;
+  width: 100%;
+  height: 60rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #FFF;
+  margin-bottom: 4rpx;
 }

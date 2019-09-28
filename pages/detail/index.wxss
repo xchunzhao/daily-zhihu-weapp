@@ -4,6 +4,19 @@
   display: none;
 }
 
+.d_header {
+  position: relative;
+  width: 100%;
+  height: 480rpx;
+}
+.d_title {
+  position: absolute;
+  bottom: 24px;
+  left: 12px;
+  color: #FFF;
+  font-size: 20px;
+}
+
 
 article,
 aside,
@@ -149,9 +162,6 @@ ol {
 }
 .content-wrap a {
   word-break: break-all;
-}
-.headline {
-  border-bottom: 4px solid #f6f6f6;
 }
 .headline-title.onlyheading {
   margin: 20px 0;

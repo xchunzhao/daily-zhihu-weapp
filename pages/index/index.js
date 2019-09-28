@@ -3,8 +3,17 @@
 const app = getApp()
 
 import CONFIG from "../../utils/config.js";
-var dialog = require("../../utils/dialog.js");
+import wxRequest from '../../utils/wxRequest';
+import moment from '../../utils/moment.min.js';
 var util = require("../../utils/util.js");
+
+function range(start, end){
+  const result = [];
+  for(var i = start; i < end; i ++) {
+    result.push(i);
+  }
+  return result;
+}
 
 Page({
   data: {
@@ -19,40 +28,44 @@ Page({
     },
     stories: [],
     topStories: [],
-    datetime: ""
   },
   getNewsList: function(){
     const self = this;
-    wx.request({
+    //只获取最近5天数据
+    wxRequest({
       url: CONFIG.API_URL.NEWS_LATEST_QUERY, 
       method: 'GET',
       header: {
         'Content-Type': 'application/json'
-      },
-      success: function(res) {
-        console.log(res);//errMsg: "request:ok", data: Object, statusCode: 200
-        if(res.statusCode == 200){
-          //日期格式化 '19930701' -> 1993-07-01  
-          var dateString = res.data.date;
-          var pattern = /(\d{4})(\d{2})(\d{2})/;
-          var formatedDate = dateString.replace(pattern, '$1-$2-$3');
-
-          self.setData({
-            stories: res.data.stories,
-            topStories: res.data.top_stories,
-            datetime: formatedDate
-          })
-        }
-      },
-      fail: function() {
-        setTimeout(function(){
-          dialog.toast("请求失败，请检查您的网络！");
-        },1000);
-      },
-      complete: function() {
-        wx.stopPullDownRefresh();//停止下拉刷新
       }
-    })
+    }).then(res => {
+      if(res.statusCode == 200){
+        const nowDate = res.data.date;
+        const stories = [];
+        stories.push({
+          date: nowDate,
+          stories: res.data.stories
+        });
+        //再获取前4天数据
+        const promises = range(0,4).map(i => {
+          const queryDate = moment(nowDate).subtract(i, 'days').format('YYYYMMDD');
+          return wxRequest({
+            url: CONFIG.API_URL.NEWS_HOSTORY_QUERY + queryDate, 
+            method: 'GET',
+            header: {
+              'Content-Type': 'application/json'
+            }
+          });
+        })
+        Promise.all(promises)
+        .then(responses => {
+          self.setData({
+            topStories: res.data.top_stories,
+            stories: stories.concat(responses.map(res => res.data))
+          })
+        });
+      }
+    });
   },
   //跳转到详情页
   navToDetail: function(e) {

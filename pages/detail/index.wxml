@@ -2,6 +2,10 @@
 <import src="../../wxParse/wxParse.wxml" />
 
 <view class="container">
+  <view class="d_header">
+    <image style="width:100%" src="{{imgSrc}}"></image>
+    <view class="d_title">{{title}}</view>
+  </view>
   <template 
     is="wxParse" 
     data="{{wxParseData:article.nodes}}"

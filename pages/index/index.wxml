@@ -18,7 +18,7 @@
   </swiper>
   <view class="news">
     <block wx:key="{{date}}" wx:for="{{stories}}" wx:for-item="dailyStories">
-      <view class="news_date">
+      <view class="news_date sticky">
         {{dailyStories.date}}
       </view>
       <view class="news_list">

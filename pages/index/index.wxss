@@ -37,3 +37,8 @@ swiper .slide_title {
   color: #FFF;
   margin-bottom: 4rpx;
 }
+
+.sticky {
+  position: sticky;
+  top: 0;
+}

@@ -144,6 +144,7 @@ Page({
     //显示顶部刷新图标
     wx.showNavigationBarLoading();
     this.getLatestNews();
+    wx.hideNavigationBarLoading();
     wx.stopPullDownRefresh();
     // 停止下拉动作
   },

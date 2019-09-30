@@ -32,21 +32,21 @@ Page({
     //   url: '../comments/comments?id=' + e.currentTarget.id
     // })
   },
-  //富文本链接处理
+  //富文本链接处理 (个人账号无法定义业务服务器域名)
   wxParseTagATap: function(e){
     const link = e.currentTarget.dataset.src;
-    wx.navigateTo({
-      url: '../outlink/index?src=' + link,
-      success: function(res){
-        // success
-      },
-      fail: function() {
-        // fail
-      },
-      complete: function() {
-        // complete
-      }
-    })
+    // wx.navigateTo({
+    //   url: '../outlink/index?src=' + link,
+    //   success: function(res){
+    //     // success
+    //   },
+    //   fail: function() {
+    //     // fail
+    //   },
+    //   complete: function() {
+    //     // complete
+    //   }
+    // })
   },
   loadExtraData: function(newsId){
     var self = this;

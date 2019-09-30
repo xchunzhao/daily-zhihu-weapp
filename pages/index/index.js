@@ -18,6 +18,8 @@ const day2Zh = {
   6: '六'
 };
 
+const pageSize = 5;
+
 function range(start, end){
   const result = [];
   for(var i = start; i < end; i ++) {
@@ -31,6 +33,10 @@ function transformDate(date){
 }
 
 Page({
+  logicData: {
+    nowDate: '',
+    pageNo: 1
+  },
   data: {
     swiperConfig: {
       indicatorDots: true,
@@ -42,10 +48,36 @@ Page({
       duration: 1000,
     },
     stories: [],
-    topStories: [],
+    topStories: []
   },
-  getNewsList: function(){
-    const self = this;
+  getPaginationNews: function() {
+    //再获取前4天数据
+    const { stories } = this.data;
+    const { pageNo, nowDate } = this.logicData;
+    const promises = range((pageNo-1) * pageSize, pageNo * pageSize - 1).map(i => {
+      const queryDate = moment(nowDate).subtract(i, 'days').format('YYYYMMDD');
+      console.log(i, nowDate);
+      return wxRequest({
+        url: CONFIG.API_URL.NEWS_HOSTORY_QUERY + queryDate, 
+        method: 'GET',
+        header: {
+          'Content-Type': 'application/json'
+        }
+      });
+    })
+    Promise.all(promises)
+      .then(responses => {
+        this.setData({
+          stories: stories.concat(responses.map(res => {
+            return {
+              date: transformDate(res.data.date),
+              stories: res.data.stories
+            }
+          }))
+        })
+      });
+  },
+  getLatestNews: function(){
     //只获取最近5天数据
     wxRequest({
       url: CONFIG.API_URL.NEWS_LATEST_QUERY, 
@@ -56,34 +88,19 @@ Page({
     }).then(res => {
       if(res.statusCode == 200){
         const nowDate = res.data.date;
-        const stories = [];
-        stories.push({
+        const newStories = []
+        newStories.push({
           date: transformDate(nowDate),
           stories: res.data.stories
         });
-        //再获取前4天数据
-        const promises = range(0,9).map(i => {
-          const queryDate = moment(nowDate).subtract(i, 'days').format('YYYYMMDD');
-          return wxRequest({
-            url: CONFIG.API_URL.NEWS_HOSTORY_QUERY + queryDate, 
-            method: 'GET',
-            header: {
-              'Content-Type': 'application/json'
-            }
-          });
-        })
-        Promise.all(promises)
-        .then(responses => {
-          self.setData({
-            topStories: res.data.top_stories,
-            stories: stories.concat(responses.map(res => {
-              return {
-                date: transformDate(res.data.date),
-                stories: res.data.stories
-              }
-            }))
-          })
-        });
+        this.logicData = {
+          ...this.logicData,
+          nowDate: nowDate
+        };
+        this.setData({
+          topStories: res.data.top_stories,
+          stories: newStories
+        },() => this.getPaginationNews());
       }
     });
   },
@@ -108,7 +125,7 @@ Page({
       withShareTicket: true
     });
     //获取知乎日报信息
-    this.getNewsList();
+    this.getLatestNews();
   },
   onShareAppMessage: function (ops) {
     return {
@@ -121,5 +138,21 @@ Page({
         dialog.toast('转发失败');
       }
     }
+  },
+  //下拉刷新
+  onPullDownRefresh: function() {
+    //显示顶部刷新图标
+    wx.showNavigationBarLoading();
+    this.getLatestNews();
+    wx.stopPullDownRefresh();
+    // 停止下拉动作
+  },
+  //上拉加载
+  onReachBottom: function() {
+    this.logicData = {
+      ...this.logicData,
+      pageNo: this.logicData.pageNo + 1
+    };
+    this.getPaginationNews();
   }
 })
